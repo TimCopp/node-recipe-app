@@ -1,5 +1,6 @@
 const express = require('express')
 const { getDbConnection } = require('./database')
+const { asyncHandler } = require('./errorHandler')
 
 const router = express.Router()
 
@@ -39,5 +40,16 @@ router.post('/recipes/:id/edit', async (req, res) => {
 	])
 	res.redirect(`/recipes/${recipeId}`)
 })
+
+router.post('/recipes/:id/delete', asyncHandler(async (req, res) => {
+	const db = await getDbConnection()
+	const recipeId = req.params.id
+	const recipe = await db.get('SELECT id FROM recipes WHERE id = ?', [recipeId])
+	if (!recipe) {
+		return res.status(404).render('recipe', { recipe: null })
+	}
+	await db.run('DELETE FROM recipes WHERE id = ?', [recipeId])
+	res.redirect('/recipes')
+}))
 
 module.exports = router

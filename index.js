@@ -47,6 +47,11 @@ initializeDb().catch(console.error)
 
 app.use('/', routes)
 
+app.use((err, req, res, next) => {
+	console.error(err.stack)
+	res.status(500).send('Something went wrong.')
+})
+
 app.listen(PORT, () => {
 	console.log(`Server running on port ${PORT}`)
 })
