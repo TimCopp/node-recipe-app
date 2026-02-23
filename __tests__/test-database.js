@@ -2,8 +2,9 @@ const sqlite3 = require('sqlite3')
 const { open } = require('sqlite')
 
 async function getTestDbConnection() {
+	const filename = `./test-database-${process.pid}.sqlite`
 	return open({
-		filename: './test-database.sqlite',
+		filename,
 		driver: sqlite3.Database,
 	})
 }
